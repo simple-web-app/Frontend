@@ -3,17 +3,21 @@ import Home from '../views/Home.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/page/:page',
     name: 'Home',
     component: Home,
   },
   {
-    path: '/about',
-    name: 'About',
+    path: '/posts/:id',
+    name: 'Full Post',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/FullPost.vue'),
+  },
+  {
+    path: '/',
+    redirect: '/page/1',
   },
 ];
 

@@ -1,30 +1,50 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <sidebar></sidebar>
+  <div class="main">
+    <navigation-bar></navigation-bar>
+    <div class="autopagerize_page_element">
+      <div class="content">
+        <router-view :key="route.fullPath"/>
+      </div>
+    </div>
   </div>
-  <router-view/>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<style scoped>
+.content {
+  height: auto;
+  float: right;
+  width: 60%;
+  margin-top: 60px;
 }
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+@media screen and (max-width: 960px) {
+  .content {
+    margin-top: 420px;
+    width: 100%;
+    z-index: 2;
+    position: absolute;
+  }
 }
 </style>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import Sidebar from '@/components/Sidebar.vue'; // @ is an alias to /src
+import NavigationBar from '@/components/NavigationBar.vue';
+import { useRoute } from 'vue-router';
+
+export default defineComponent({
+  components: {
+    Sidebar,
+    NavigationBar,
+  },
+  setup() {
+    const route = useRoute();
+
+    return {
+      route,
+    };
+  },
+});
+</script>
