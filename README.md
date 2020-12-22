@@ -1,5 +1,7 @@
 # frontend
 
+Simple Web App powered by Vue 3.
+
 ## Project setup
 ```
 yarn install
@@ -9,6 +11,8 @@ yarn install
 ```
 yarn serve
 ```
+
+Dev server will listen @ localhost:9000 and proxy requests with path prefix `/api` to our staging backend server `http://cahn233.cn:3333`.
 
 ### Compiles and minifies for production
 ```
