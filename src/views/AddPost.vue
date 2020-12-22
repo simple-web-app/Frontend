@@ -72,8 +72,14 @@ button:disabled {
 </style>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import {
+  defineComponent,
+  inject,
+  onBeforeMount,
+  ref,
+  Ref,
+} from 'vue';
+import { useRouter } from 'vue-router';
 import { useApi } from '../modules/api';
 import TagSelector from '../components/TagSelector.vue';
 
@@ -86,6 +92,8 @@ export default defineComponent({
     const {
       loading, data, error, post,
     } = useApi('/article');
+
+    const currentUser = inject('currentUser') as Ref<string>;
 
     const router = useRouter();
 
@@ -108,6 +116,12 @@ export default defineComponent({
     const updateTags = (newTags: string[]) => {
       tags.value = newTags;
     };
+
+    onBeforeMount(() => {
+      if (!currentUser.value) {
+        router.replace('/page/1');
+      }
+    });
 
     return {
       loading, data, error, post, name, content, publish, updateTags,
