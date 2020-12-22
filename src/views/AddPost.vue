@@ -3,6 +3,7 @@
     <div class="post-title">
       <input type="text" placeholder="Title" v-model="name">
     </div>
+    <tag-selector @updateTags="updateTags"/>
     <div class="post-content">
       <textarea placeholder="Start typing..." spellcheck="false" v-model="content"/>
     </div>
@@ -74,9 +75,13 @@ button:disabled {
 import { defineComponent, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useApi } from '../modules/api';
+import TagSelector from '../components/TagSelector.vue';
 
 export default defineComponent({
   name: 'AddPost',
+  components: {
+    TagSelector,
+  },
   setup() {
     const {
       loading, data, error, post,
@@ -86,19 +91,26 @@ export default defineComponent({
 
     const name = ref('');
     const content = ref('');
+    const tags = ref([] as string[]);
     const publish = async () => {
       await post({
         name: name.value,
         content: content.value,
-        tags: [],
+        tags: tags.value.map((tag) => ({
+          name: tag,
+        })),
       });
       if (data.value) {
         router.push('/page/1');
       }
     };
 
+    const updateTags = (newTags: string[]) => {
+      tags.value = newTags;
+    };
+
     return {
-      loading, data, error, post, name, content, publish,
+      loading, data, error, post, name, content, publish, updateTags,
     };
   },
 
