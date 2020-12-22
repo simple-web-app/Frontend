@@ -4,13 +4,23 @@
       <li>
         <router-link :class="{'current': isHome}" to="/page/1">Home</router-link>
       </li>
-    </nav>
-    <div class="information">
-      <div class="avatar">
-        <img src="https://secure.gravatar.com/avatar/54c2794be778d49d0396e736d88ac6d0?s=46&d=identicon">
+      <div class="information">
+        <li v-if="!currentUser">
+          <a @click="showLoginModal" href="javascript:void(0)">登录</a>
+        </li>
+        <li v-if="currentUser">
+          <router-link :class="{'current': isAddPost}" to="/add">新文章</router-link>
+        </li>
+        <li v-if="currentUser">
+          <a>{{ currentUser }}</a>
+        </li>
       </div>
-    </div>
+    </nav>
   </div>
+  <login-modal
+    :is-visible="isLoginModalVisible"
+    @close-login-modal="handleCloseLoginModal"
+  />
 </template>
 
 <style scoped>
@@ -25,7 +35,6 @@
 .page-top nav {
   list-style: none;
   padding: 18px 30px;
-  float: left;
   font-size: 12px;
 }
 .page-top nav li {
@@ -46,8 +55,8 @@
 }
 .page-top .information {
   float: right;
-  padding-top: 12px;
-  padding-right: 20px;
+  /* padding-top: 12px;
+  padding-right: 20px; */
 }
 .page-top .information .avatar {
   float: right;
@@ -75,18 +84,43 @@
 </style>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import {
+  computed,
+  defineComponent,
+  ref,
+  inject,
+} from 'vue';
 import { useRoute } from 'vue-router';
+import LoginModal from './LoginModal.vue';
 
 export default defineComponent({
   name: 'NavigationBar',
-  setup(props) {
+  components: {
+    LoginModal,
+  },
+  setup() {
     const route = useRoute();
 
     const isHome = computed(() => route.name === 'Home');
+    const isAddPost = computed(() => route.name === 'Add Post');
+
+    const isLoginModalVisible = ref(false);
+    const showLoginModal = () => {
+      isLoginModalVisible.value = true;
+    };
+    const handleCloseLoginModal = () => {
+      isLoginModalVisible.value = false;
+    };
+
+    const currentUser = inject('currentUser');
 
     return {
       isHome,
+      isAddPost,
+      isLoginModalVisible,
+      showLoginModal,
+      handleCloseLoginModal,
+      currentUser,
     };
   },
 });

@@ -1,27 +1,73 @@
 import Axios from 'axios';
-import { ref } from 'vue';
+import { ref, inject, Ref } from 'vue';
 
 export const api = Axios.create({
   baseURL: '/api',
 });
 
 export const useApi = (endpoint: string) => {
-  const loading = ref(true);
+  const loading = ref(false);
   const data = ref();
   const error = ref();
 
-  const get = () => api.get(endpoint)
-    .then((res) => {
-      data.value = res.data;
+  const token = inject('currentToken') as Ref<string>;
+
+  const get = () => {
+    loading.value = true;
+    error.value = undefined;
+    return api.get(endpoint, {
+      headers: {
+        Authorization: token.value,
+      },
     })
-    .catch((err) => {
-      error.value = err;
+      .then((res) => {
+        data.value = res.data;
+      })
+      .catch((err) => {
+        error.value = err;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+  const getWithQueries = (queries: URLSearchParams) => {
+    loading.value = true;
+    error.value = undefined;
+    return api.get(`${endpoint}?${queries.toString()}`, {
+      headers: {
+        Authorization: token.value,
+      },
     })
-    .finally(() => {
-      loading.value = false;
-    });
+      .then((res) => {
+        data.value = res.data;
+      })
+      .catch((err) => {
+        error.value = err;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
+  const post = (postData: any) => {
+    loading.value = true;
+    error.value = undefined;
+    return api.post(endpoint, postData, {
+      headers: {
+        Authorization: token.value,
+      },
+    })
+      .then((res) => {
+        data.value = res.data;
+      })
+      .catch((err) => {
+        error.value = err;
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  };
 
   return {
-    loading, data, error, get,
+    loading, data, error, get, getWithQueries, post,
   };
 };

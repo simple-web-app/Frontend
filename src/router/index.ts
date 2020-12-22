@@ -16,6 +16,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/FullPost.vue'),
   },
   {
+    path: '/add',
+    name: 'Add Post',
+    component: () => import('../views/AddPost.vue'),
+  },
+  {
     path: '/',
     redirect: '/page/1',
   },
